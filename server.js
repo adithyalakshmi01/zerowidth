@@ -1,52 +1,43 @@
-require("dotenv").config(); // Load environment variables
-const express = require("express");
-const path = require("path");
-const bodyParser = require("body-parser");
-const { MongoClient } = require("mongodb");
+const express = require('express');
+const mongoose = require('mongoose');
+const path = require('path');
+const multer = require('multer');
+const bodyParser = require('body-parser');
+const indexRoutes = require('./routes/index');
+const apiRoutes = require('./routes/api');
 
-// Import Routes
-const embedRoutes = require("./routes/embed");
-const plagiarismRoutes = require("./routes/plagiarism");
-const integrityRoutes = require("./routes/integrity");
-const downloadRoutes = require("./routes/download");
-
+// Initialize app
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Connect to MongoDB (Single Connection)
-const mongoURI = process.env.MONGO_URI;
-const dbName = process.env.DB_NAME;
+// Connect to MongoDB
+mongoose.connect('mongodb://localhost:27017/zeroWidthWatermark', {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+})
+.then(() => console.log('MongoDB connected'))
+.catch(err => console.error('MongoDB connection error:', err));
 
-let db;
-MongoClient.connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true })
-    .then(client => {
-        db = client.db(dbName);
-        app.locals.db = db; // Store in app.locals for access in routes
-        console.log("✅ Connected to MongoDB");
-    })
-    .catch(err => {
-        console.error("❌ MongoDB Connection Error:", err);
-        process.exit(1);
-    });
+// Set view engine
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'views'));
 
 // Middleware
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.static(path.join(__dirname, 'public')));
 app.use(bodyParser.json());
-app.use(express.static(path.join(__dirname, "public")));
-app.set("view engine", "ejs");
+app.use(bodyParser.urlencoded({ extended: true }));
 
-// Routes (Pass db to each route)
-app.use("/embed", (req, res, next) => { req.db = db; next(); }, embedRoutes);
-app.use("/plagiarism", (req, res, next) => { req.db = db; next(); }, plagiarismRoutes);
-app.use("/integrity", (req, res, next) => { req.db = db; next(); }, integrityRoutes);
-app.use("/download", (req, res, next) => { req.db = db; next(); }, downloadRoutes);
+// Routes
+app.use('/', indexRoutes);
+app.use('/api', apiRoutes);
 
-// Home Route
-app.get("/", (req, res) => {
-    res.render("index");
+// Error handling
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).send('Something broke!');
 });
 
-// Start Server
+// Start server
 app.listen(PORT, () => {
-    console.log(`🚀 Server running at http://localhost:${PORT}`);
+  console.log(`Server running on port ${PORT}`);
 });
