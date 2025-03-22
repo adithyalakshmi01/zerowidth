@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Embed Data</title>
+</head>
+<body>
+    <h1>Embed Data</h1>
+    <form action="/embed" method="POST" enctype="multipart/form-data">
+        <label for="file">Upload File (PDF/Text):</label>
+        <input type="file" name="file" required><br><br>
+        
+        <label for="name">Your Name:</label>
+        <input type="text" name="name" placeholder="Your Name" required><br><br>
+
+        <label for="email">Your Email:</label>
+        <input type="email" name="email" placeholder="Your Email" required><br><br>
+
+        <button type="submit">Upload & Embed</button>
+    </form>
+</body>
+</html>

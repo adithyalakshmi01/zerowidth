@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Plagiarism Check</title>
+</head>
+<body>
+    <h1>Check Plagiarism</h1>
+    <form action="/plagiarism" method="POST" enctype="multipart/form-data">
+        <label for="file1">Upload File 1:</label>
+        <input type="file" name="files" required><br><br>
+        
+        <label for="file2">Upload File 2:</label>
+        <input type="file" name="files" required><br><br>
+
+        <button type="submit">Check Plagiarism</button>
+    </form>
+
+    <% if (similarity !== undefined) { %>
+        <h2>Plagiarism Result:</h2>
+        <p>Similarity: <%= similarity %>%</p>
+    <% } %>
+
+    <a href="/">Go Back to Home</a>
+</body>
+</html>

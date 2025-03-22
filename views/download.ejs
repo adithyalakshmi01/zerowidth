@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Download File</title>
+</head>
+<body>
+    <h1>Download Your File</h1>
+
+    <% if (fileUrl) { %>
+        <p><a href="<%= fileUrl %>" download>Download File</a></p>
+    <% } else { %>
+        <p>File not found.</p>
+    <% } %>
+
+    <a href="/">Go Back to Home</a>
+</body>
+</html>
